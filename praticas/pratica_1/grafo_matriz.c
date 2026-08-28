@@ -1,19 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "grafo_matriz.h"
 
-static int indice_valido(const RedeMatricial r, int vertice)
+static int indice_valido(const RedeMatricial *r, int vertice)
 {
     return vertice >= 0 && vertice < r->total_vertices;
 }
 
-RedeMatricialnova_rede_matricial(int total_vertices)
+RedeMatricial *nova_rede_matricial(int total_vertices)
 {
     if (total_vertices < 0) {
         return NULL;
     }
 
-    RedeMatricial r = malloc(sizeof(RedeMatricial));
+    RedeMatricial *r = malloc(sizeof(RedeMatricial));
     if (r == NULL) {
         return NULL;
     }
@@ -25,7 +26,7 @@ RedeMatricialnova_rede_matricial(int total_vertices)
         return r;
     }
 
-    r->matriz = malloc((size_t)total_vertices sizeof(int ));
+    r->matriz = malloc((size_t)total_vertices * sizeof(int *));
     if (r->matriz == NULL) {
         free(r);
         return NULL;
@@ -46,9 +47,9 @@ RedeMatricialnova_rede_matricial(int total_vertices)
     return r;
 }
 
-int adicionar_ligacao_matricial(RedeMatricialr, int a, int b)
+int adicionar_ligacao_matricial(RedeMatricial *r, int a, int b)
 {
-    if (r == NULL  !indice_valido(r, a)  !indice_valido(r, b)) {
+    if (r == NULL || !indice_valido(r, a) || !indice_valido(r, b)) {
         return -1;
     }
 
@@ -62,9 +63,9 @@ int adicionar_ligacao_matricial(RedeMatricialr, int a, int b)
     return 0;
 }
 
-int excluir_ligacao_matricial(RedeMatricial r, int a, int b)
+int excluir_ligacao_matricial(RedeMatricial *r, int a, int b)
 {
-    if (r == NULL  !indice_valido(r, a)  !indice_valido(r, b)) {
+    if (r == NULL || !indice_valido(r, a) || !indice_valido(r, b)) {
         return -1;
     }
 
@@ -78,7 +79,7 @@ int excluir_ligacao_matricial(RedeMatricial r, int a, int b)
     return 0;
 }
 
-int quantidade_conexoes_matricial(const RedeMatricialr, int vertice)
+int quantidade_conexoes_matricial(const RedeMatricial *r, int vertice)
 {
     if (r == NULL || !indice_valido(r, vertice)) {
         return -1;
@@ -91,17 +92,17 @@ int quantidade_conexoes_matricial(const RedeMatricialr, int vertice)
 
     return total;
 }
-int existe_ligacao_matricial(const RedeMatricial r, int a, int b)
+
+int existe_ligacao_matricial(const RedeMatricial *r, int a, int b)
 {
-    if (r == NULL  !indice_valido(r, a) 
- !indice_valido(r, b)) {
+    if (r == NULL || !indice_valido(r, a) || !indice_valido(r, b)) {
         return -1;
     }
 
     return r->matriz[a][b];
 }
 
-void destruir_rede_matricial(RedeMatricialr)
+void destruir_rede_matricial(RedeMatricial *r)
 {
     if (r == NULL) {
         return;

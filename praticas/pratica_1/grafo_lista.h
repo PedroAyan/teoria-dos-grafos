@@ -1,21 +1,39 @@
 #ifndef GRAFO_LISTA_H
 #define GRAFO_LISTA_H
 
-typedef struct No {
-    int destino;
-    struct No prox;
-} No;
+/* Rede nao direcionada representada por lista encadeada de vizinhos.
+ * Vertices numerados de 0 a total_vertices-1. */
+typedef struct Elo {
+    int alvo;
+    struct Elo *seguinte;
+} Elo;
 
 typedef struct {
-    int n;
-    No **adj;
-} GrafoLista;
+    int total_vertices;
+    Elo **cabecas;
+} RedeEncadeada;
 
-GrafoListacriar_grafo_lista(int n);
-void inserir_aresta_lista(GrafoLista g, int origem, int destino);
-void remover_aresta_lista(GrafoListag, int origem, int destino);
-int grau_lista(GrafoLista g, int vertice);
-int sao_adjacentes_lista(GrafoListag, int origem, int destino);
-void liberar_grafo_lista(GrafoLista *g);
+/* Cria uma rede com total_vertices vertices (0 gera uma rede vazia valida).
+ * Retorna NULL se total_vertices < 0 ou se a alocacao falhar. */
+RedeEncadeada *nova_rede_encadeada(int total_vertices);
 
-#endif
+/* Adiciona a ligacao entre a e b. Retorna 0 em sucesso, -1 se a rede for
+ * nula, algum vertice for invalido ou a ligacao ja existir. */
+int adicionar_ligacao_encadeada(RedeEncadeada *r, int a, int b);
+
+/* Exclui a ligacao entre a e b. Retorna 0 em sucesso, -1 se a rede for
+ * nula, algum vertice for invalido ou a ligacao nao existir. */
+int excluir_ligacao_encadeada(RedeEncadeada *r, int a, int b);
+
+/* Retorna a quantidade de conexoes do vertice, ou -1 se a rede for nula
+ * ou o vertice for invalido. */
+int quantidade_conexoes_encadeada(const RedeEncadeada *r, int vertice);
+
+/* Retorna 1 se a e b estao ligados, 0 se nao estao, ou -1 se a rede
+ * for nula ou algum vertice for invalido. */
+int existe_ligacao_encadeada(const RedeEncadeada *r, int a, int b);
+
+/* Libera toda a memoria alocada para a rede. Aceita r == NULL sem efeito. */
+void destruir_rede_encadeada(RedeEncadeada *r);
+
+#endif  

@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "rede_encadeada.h"
+#include "grafo_lista.h"
 
-static int indice_valido(const RedeEncadeada r, int vertice)
+static int indice_valido(const RedeEncadeada *r, int vertice)
 {
     return vertice >= 0 && vertice < r->total_vertices;
 }
 
-static Elocriar_elo(int alvo)
+static Elo *criar_elo(int alvo)
 {
-    Elo elo = malloc(sizeof(Elo));
+    Elo *elo = malloc(sizeof(Elo));
     if (elo == NULL) {
         return NULL;
     }
@@ -21,9 +21,9 @@ static Elocriar_elo(int alvo)
     return elo;
 }
 
-static int contem_alvo(const Elolista, int alvo)
+static int contem_alvo(const Elo *lista, int alvo)
 {
-    for (const Elo atual = lista; atual != NULL; atual = atual->seguinte) {
+    for (const Elo *atual = lista; atual != NULL; atual = atual->seguinte) {
         if (atual->alvo == alvo) {
             return 1;
         }
@@ -32,13 +32,12 @@ static int contem_alvo(const Elolista, int alvo)
     return 0;
 }
 
-/ Remove o primeiro elo com alvo == destino da lista de r->cabecas[origem].
- 
-Retorna 0 se removeu, -1 se nao encontrou o elo. */
-static int remover_elo(RedeEncadeada r, int origem, int destino)
+/* Remove o primeiro elo com alvo == destino da lista de r->cabecas[origem].
+ * Retorna 0 se removeu, -1 se nao encontrou o elo. */
+static int remover_elo(RedeEncadeada *r, int origem, int destino)
 {
-    Eloatual = r->cabecas[origem];
-    Elo anterior = NULL;
+    Elo *atual = r->cabecas[origem];
+    Elo *anterior = NULL;
 
     while (atual != NULL) {
         if (atual->alvo == destino) {
@@ -57,13 +56,13 @@ static int remover_elo(RedeEncadeada r, int origem, int destino)
     return -1;
 }
 
-RedeEncadeadanova_rede_encadeada(int total_vertices)
+RedeEncadeada *nova_rede_encadeada(int total_vertices)
 {
     if (total_vertices < 0) {
         return NULL;
     }
 
-    RedeEncadeada r = malloc(sizeof(RedeEncadeada));
+    RedeEncadeada *r = malloc(sizeof(RedeEncadeada));
     if (r == NULL) {
         return NULL;
     }
@@ -75,7 +74,7 @@ RedeEncadeadanova_rede_encadeada(int total_vertices)
         return r;
     }
 
-    r->cabecas = malloc((size_t)total_vertices sizeof(Elo *));
+    r->cabecas = malloc((size_t)total_vertices * sizeof(Elo *));
     if (r->cabecas == NULL) {
         free(r);
         return NULL;
@@ -87,10 +86,10 @@ RedeEncadeadanova_rede_encadeada(int total_vertices)
 
     return r;
 }
-int adicionar_ligacao_encadeada(RedeEncadeada r, int a, int b)
+
+int adicionar_ligacao_encadeada(RedeEncadeada *r, int a, int b)
 {
-    if (r == NULL  !indice_valido(r, a) 
- !indice_valido(r, b)) {
+    if (r == NULL || !indice_valido(r, a) || !indice_valido(r, b)) {
         return -1;
     }
 
@@ -98,7 +97,7 @@ int adicionar_ligacao_encadeada(RedeEncadeada r, int a, int b)
         return -1;
     }
 
-    Eloelo_a = criar_elo(b);
+    Elo *elo_a = criar_elo(b);
     if (elo_a == NULL) {
         return -1;
     }
@@ -106,7 +105,7 @@ int adicionar_ligacao_encadeada(RedeEncadeada r, int a, int b)
     r->cabecas[a] = elo_a;
 
     if (a != b) {
-        Elo elo_b = criar_elo(a);
+        Elo *elo_b = criar_elo(a);
         if (elo_b == NULL) {
             remover_elo(r, a, b);
             return -1;
@@ -118,10 +117,9 @@ int adicionar_ligacao_encadeada(RedeEncadeada r, int a, int b)
     return 0;
 }
 
-int excluir_ligacao_encadeada(RedeEncadeadar, int a, int b)
+int excluir_ligacao_encadeada(RedeEncadeada *r, int a, int b)
 {
-    if (r == NULL  !indice_valido(r, a) 
- !indice_valido(r, b)) {
+    if (r == NULL || !indice_valido(r, a) || !indice_valido(r, b)) {
         return -1;
     }
 
@@ -136,31 +134,30 @@ int excluir_ligacao_encadeada(RedeEncadeadar, int a, int b)
     return 0;
 }
 
-int quantidade_conexoes_encadeada(const RedeEncadeada r, int vertice)
+int quantidade_conexoes_encadeada(const RedeEncadeada *r, int vertice)
 {
     if (r == NULL || !indice_valido(r, vertice)) {
         return -1;
     }
 
     int total = 0;
-    for (const Eloatual = r->cabecas[vertice]; atual != NULL; atual = atual->seguinte) {
+    for (const Elo *atual = r->cabecas[vertice]; atual != NULL; atual = atual->seguinte) {
         total++;
     }
 
     return total;
 }
 
-int existe_ligacao_encadeada(const RedeEncadeada r, int a, int b)
+int existe_ligacao_encadeada(const RedeEncadeada *r, int a, int b)
 {
-    if (r == NULL  !indice_valido(r, a) 
- !indice_valido(r, b)) {
+    if (r == NULL || !indice_valido(r, a) || !indice_valido(r, b)) {
         return -1;
     }
 
     return contem_alvo(r->cabecas[a], b);
 }
 
-void destruir_rede_encadeada(RedeEncadeadar)
+void destruir_rede_encadeada(RedeEncadeada *r)
 {
     if (r == NULL) {
         return;
@@ -168,9 +165,9 @@ void destruir_rede_encadeada(RedeEncadeadar)
 
     if (r->cabecas != NULL) {
         for (int i = 0; i < r->total_vertices; i++) {
-            Elo atual = r->cabecas[i];
+            Elo *atual = r->cabecas[i];
             while (atual != NULL) {
-                Eloproximo = atual->seguinte;
+                Elo *proximo = atual->seguinte;
                 free(atual);
                 atual = proximo;
             }

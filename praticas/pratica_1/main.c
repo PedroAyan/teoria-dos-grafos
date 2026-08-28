@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include "grafo_lista.h"
+
 #include "grafo_matriz.h"
+#include "grafo_lista.h"
 
 static void secao(const char *titulo)
 {

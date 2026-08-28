@@ -1,22 +1,22 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -std=c11
 LDLIBS = -lm
-TARGET = programa
+TARGET = main
 SRC = grafo_matriz.c grafo_lista.c main.c
 OBJ = $(SRC:.c=.o)
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-    $(CC) $(CFLAGS) -o $(TARGET) $(OBJ) $(LDLIBS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ) $(LDLIBS)
 
 %.o: %.c
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-    rm -f $(TARGET) $(OBJ)
+	rm -f $(TARGET) $(OBJ)
 
 run: $(TARGET)
-    ./$(TARGET)
+	./$(TARGET)
 
 .PHONY: all clean run
