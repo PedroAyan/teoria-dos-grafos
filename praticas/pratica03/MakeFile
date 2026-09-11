@@ -1,0 +1,14 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -std=c11
+TARGET = main
+ifeq ($(OS),Windows_NT)
+TARGET = main.exe
+endif
+all: $(TARGET)
+$(TARGET): main.c dag.c dag.h
+	$(CC) $(CFLAGS) main.c dag.c -o $(TARGET)
+run: $(TARGET)
+	./$(TARGET)
+clean:
+	$(RM) $(TARGET) *.o
+.PHONY: all run clean
